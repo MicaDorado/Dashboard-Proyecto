@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 🎨 Tema claro */
+body {
+  @apply bg-[#f8f4ef] text-[#3e2c24] font-sans transition-colors duration-300;
+}
+
+/* 🌙 Tema oscuro */
+body.dark {
+  @apply bg-[#2e1e14] text-[#f8f4ef];
+}
