@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "../../features/user/userSlice";
 import { useNavigate } from "react-router-dom";
+import { RiMvAiLine } from "react-icons/ri";
 
 export default function Login() {
   const [user, setUser] = useState("");
@@ -21,7 +22,7 @@ export default function Login() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username: user,
+          email: user,
           password: pass,
         }),
       });
@@ -60,7 +61,7 @@ export default function Login() {
         </h2>
         <input
           type="text"
-          placeholder="Usuario"
+          placeholder="Email"
           value={user}
           onChange={(e) => setUser(e.target.value)}
           className="border border-[#d4a373]/40 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-[#d4a373]"
