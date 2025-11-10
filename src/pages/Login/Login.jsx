@@ -6,28 +6,46 @@ import { useNavigate } from "react-router-dom";
 export default function Login() {
   const [user, setUser] = useState("");
   const [pass, setPass] = useState("");
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
-    // 🔐 Validación simple (podés reemplazar con API real después)
-    if (user === "mica" && pass === "1234") {
-      const userData = { name: "Mica", role: "Admin" };
+    try {
+      const response = await fetch("http://localhost:3000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: user,
+          password: pass,
+        }),
+      });
 
-      // Guarda el usuario en Redux y marca autenticado
-      dispatch(login({ username: user }));
+      const data = await response.json();
 
+      if (response.ok) {
+        // Guarda el usuario en Redux
+        dispatch(login({ username: user }));
 
-      // Guarda sesión local
-      localStorage.setItem("auth", "true");
+        // Guarda sesión local
+        localStorage.setItem("auth", "true");
+        localStorage.setItem("token", data.token); // Guarda el token si lo devuelve
 
-      // Redirige al dashboard
-      navigate("/");
-    } else {
-      dispatch(setError("Credenciales incorrectas"));
-      alert("Usuario o contraseña inválidos");
+        // Redirige al dashboard
+        navigate("/");
+      } else {
+        alert(data.message || "Usuario o contraseña inválidos");
+      }
+    } catch (error) {
+      console.error("Error al iniciar sesión:", error);
+      alert("Error de conexión con el servidor");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -56,9 +74,10 @@ export default function Login() {
         />
         <button
           type="submit"
-          className="bg-[#d4a373] text-[#3e2c24] rounded-md py-2 font-semibold hover:bg-[#c28b5c] transition"
+          disabled={loading}
+          className="bg-[#d4a373] text-[#3e2c24] rounded-md py-2 font-semibold hover:bg-[#c28b5c] transition disabled:opacity-50"
         >
-          Entrar
+          {loading ? "Cargando..." : "Entrar"}
         </button>
       </form>
     </div>
