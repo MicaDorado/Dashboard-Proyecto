@@ -28,6 +28,7 @@ export default function Navbar() {
           : "bg-transparent border-transparent"
       }`}
     >
+      {/* Título */}
       <h1
         className={`text-lg font-semibold transition-colors duration-300 ${
           isScrolled
@@ -38,8 +39,10 @@ export default function Navbar() {
         Panel Administrativo
       </h1>
 
-      <div className="flex items-center gap-4">
-        {/* Botón de tema */}
+      {/* Contenido derecho */}
+      <div className="flex items-center gap-2">
+
+        {/* Botón tema */}
         <button
           onClick={toggleTheme}
           className={`p-2 rounded-md transition ${
@@ -47,19 +50,12 @@ export default function Navbar() {
               ? "bg-[#8a9b7a] text-white hover:bg-[#9aab8a]"
               : "bg-[#6b7c5a] text-white hover:bg-[#7a8b69]"
           }`}
-          title={
-            theme === "light"
-              ? "Cambiar a modo oscuro"
-              : "Cambiar a modo claro"
-          }
+          title={theme === "light" ? "Cambiar a modo oscuro" : "Cambiar a modo claro"}
         >
           {theme === "light" ? <FiMoon /> : <FiSun />}
         </button>
 
-        {/* Avatar */}
-        <div className="w-9 h-9 rounded-full bg-[#6b7c5a] flex items-center justify-center text-white font-semibold">
-          M
-        </div>
+        {/* ✅ Avatar eliminado (ya no se muestra nada aquí) */}
       </div>
     </header>
   );

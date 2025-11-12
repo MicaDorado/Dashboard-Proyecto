@@ -1,61 +1,89 @@
 import { Link, useLocation } from "react-router-dom";
-import { FiHome, FiBox, FiLogOut, FiUserPlus } from "react-icons/fi";
+import { useSelector } from "react-redux";
+
+import {
+  HouseSimple as Home,
+  Receipt,
+  ForkKnife,
+  ChartPieSlice,
+  Gear,
+  Question,
+  SignOut,
+} from "phosphor-react";
 
 export default function Sidebar() {
   const location = useLocation();
+  const auth = useSelector((state) => state.auth);
+  const user = auth?.user;
+
+  const mainMenu = [
+    { to: "/", label: "Resumen del pedido", icon: Home },
+    { to: "/orders", label: "Pedidos recientes", icon: Receipt },
+    { to: "/products", label: "Menú / Productos", icon: ForkKnife },
+    { to: "/performance", label: "Desempeño", icon: ChartPieSlice },
+  ];
+
+  const secondaryMenu = [
+    { to: "/settings", label: "Ajustes", icon: Gear },
+    { to: "/help", label: "Ayuda en línea", icon: Question },
+  ];
 
   const handleLogout = () => {
     localStorage.removeItem("auth");
     window.location.href = "/login";
   };
 
-    const menuItems = [
-    { to: "/", label: "Inicio", icon: FiHome },
-    { to: "/products", label: "Productos", icon: FiBox },
-    { to: "/register", label: "Registrar Usuario", icon: FiUserPlus }, // ✅ Nuevo botón
-  ];
-
-
   return (
-    <aside className="w-64 min-h-screen bg-offwhite border-r border-sage/30 p-6 flex flex-col">
-      
-      {/* Logo / Nombre */}
-      <div className="flex items-center gap-2 mb-8">
-        <div className="w-9 h-9 rounded-xl bg-olive" />
-        <span className="text-olive font-semibold text-xl tracking-wide">Averdta</span>
+    <aside className="w-64 min-h-screen bg-offwhite border-r border-sage/30 p-6 flex flex-col select-none">
+
+      <div className="flex items-center gap-3 mb-10">
+        <img src="/tenedor-logo.png" alt="Logo" className="w-10 h-10" />
+        <span className="text-olive font-semibold text-xl tracking-wide">
+          {user?.name || "Usuario"}
+        </span>
       </div>
 
-      {/* Navegación */}
-      <nav className="flex flex-col gap-3 flex-1">
-        {menuItems.map(({ to, label, icon: Icon }) => {
+      <nav className="flex flex-col gap-2 flex-1">
+        {mainMenu.map(({ to, label, icon: Icon }) => {
           const active = location.pathname === to;
-
           return (
             <Link
               key={to}
               to={to}
-              className={[
-                "flex items-center gap-3 px-4 py-2 rounded-xl border transition text-olive",
-                active
-                  ? "bg-white border-sage/40 shadow-soft"
-                  : "hover:bg-white hover:border-sage/30 border-transparent"
-              ].join(" ")}
+              className={`flex items-center gap-3 px-4 py-2 rounded-lg border transition-all
+              ${active
+                ? "bg-white border-sage/40 shadow-soft text-olive scale-[1.03]"
+                : "border-transparent hover:bg-white hover:border-sage/30 text-olive/80 hover:scale-[1.03]"
+              }`}
             >
-              <Icon className="w-5 h-5" />
+              <Icon weight="fill" className="w-5 h-5" />
               <span className="font-medium">{label}</span>
             </Link>
           );
         })}
+
+        <div className="border-t border-sage/30 my-4"></div>
+
+        {secondaryMenu.map(({ to, label, icon: Icon }) => (
+          <Link
+            key={to}
+            to={to}
+            className="flex items-center gap-3 px-4 py-2 rounded-lg text-olive/80 hover:bg-white hover:border-sage/30 transition-all hover:scale-[1.03]"
+          >
+            <Icon weight="fill" className="w-5 h-5" />
+            <span className="font-medium">{label}</span>
+          </Link>
+        ))}
       </nav>
 
-      {/* Cerrar Sesión */}
       <button
         onClick={handleLogout}
-        className="mt-6 flex items-center justify-center gap-2 w-full bg-peach/70 hover:bg-peach text-olive font-semibold rounded-xl py-2 transition"
+        className="flex items-center gap-2 justify-center w-full py-2 text-olive font-semibold rounded-lg hover:bg-peach/50 transition border border-peach/40 cursor-pointer"
       >
-        <FiLogOut className="w-5 h-5" />
+        <SignOut weight="fill" className="w-5 h-5" />
         Cerrar sesión
       </button>
     </aside>
   );
 }
+

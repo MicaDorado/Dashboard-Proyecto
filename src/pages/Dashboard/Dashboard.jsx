@@ -1,4 +1,4 @@
-import WelcomeHero from "../../components/WelcomeHero";
+import { useSelector } from "react-redux";
 import {
   ResponsiveContainer,
   LineChart,
@@ -13,6 +13,8 @@ import {
   Pie,
   Cell
 } from "recharts";
+
+import WelcomeHero from "../../components/WelcomeHero";
 
 const monthly = [
   { name: "Jan", sales: 2400, net: 700 },
@@ -42,13 +44,16 @@ function StatCard({ title, value }) {
 }
 
 export default function Dashboard() {
+  const auth = useSelector((state) => state.auth);
+  const user = auth?.user;
+
   return (
     <div className="space-y-6">
 
-      {/* Sección de bienvenida ilustrada */}
-      <WelcomeHero />
+      {/* Sección de bienvenida */}
+      <WelcomeHero user={user || { name: "Usuario" }} />
 
-      {/* KPIs (Tarjetas) */}
+      {/* KPIs */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         <StatCard title="Ventas" value="$2,430" />
         <StatCard title="Pedidos" value="128" />
@@ -60,7 +65,7 @@ export default function Dashboard() {
 
         {/* Línea */}
         <div className="bg-white rounded-2xl p-6 shadow-soft border border-sage/30">
-          <h4 className="text-olive font-semibold mb-4">Net Income</h4>
+          <h4 className="text-olive font-semibold mb-4">Ingresos Netos</h4>
           <div className="h-60">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={monthly}>
@@ -76,7 +81,7 @@ export default function Dashboard() {
 
         {/* Barras */}
         <div className="bg-white rounded-2xl p-6 shadow-soft border border-sage/30">
-          <h4 className="text-olive font-semibold mb-4">Sales</h4>
+          <h4 className="text-olive font-semibold mb-4">Ventas Mensuales</h4>
           <div className="h-60">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={monthly}>
@@ -92,7 +97,7 @@ export default function Dashboard() {
 
         {/* Pie */}
         <div className="bg-white rounded-2xl p-6 shadow-soft border border-sage/30">
-          <h4 className="text-olive font-semibold mb-4">Income Variations</h4>
+          <h4 className="text-olive font-semibold mb-4">Categorías de Venta</h4>
           <div className="h-60">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
