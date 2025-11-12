@@ -6,6 +6,7 @@ import Products from "./pages/Products/Products.jsx";
 import Navbar from "./components/layout/Navbar.jsx";
 import Sidebar from "./components/Sidebar.jsx";
 import Register from "./pages/Register/Register.jsx";
+import Performance from "./pages/Performance/Performance.jsx"; // asegúrate de que la extensión sea .jsx
 
 function ProtectedRoute({ children }) {
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
@@ -38,8 +39,10 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* 🔐 Login libre */}
         <Route path="/login" element={<Login />} />
 
+        {/* 🔐 Dashboard */}
         <Route
           path="/"
           element={
@@ -51,6 +54,7 @@ export default function App() {
           }
         />
 
+        {/* 🔐 Productos */}
         <Route
           path="/products"
           element={
@@ -62,13 +66,25 @@ export default function App() {
           }
         />
 
-        {/* ✅ Register protegido + con Sidebar */}
+        {/* 🔐 Registrar usuario */}
         <Route
           path="/register"
           element={
             <ProtectedRoute>
               <Layout>
                 <Register />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* 🔐 Desempeño (Performance) */}
+        <Route
+          path="/performance"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Performance />
               </Layout>
             </ProtectedRoute>
           }

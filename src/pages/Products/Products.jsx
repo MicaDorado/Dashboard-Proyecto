@@ -1,56 +1,99 @@
-import { useFetch } from "../../hooks/useFetch";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+
+const categories = [
+  { id: "all", name: "Todos" },
+  { id: "sin-gluten", name: "Sin Gluten" },
+  { id: "vegano", name: "Vegano" },
+  { id: "vegetariano", name: "Vegetariano" },
+  { id: "diabetico", name: "Diabético" },
+  { id: "kosher", name: "Kosher" },
+  { id: "halal", name: "Halal" },
+];
 
 export default function Products() {
-  const { data: products, loading, error } = useFetch("/products");
+  const [products, setProducts] = useState([]);
+  const [activeCategory, setActiveCategory] = useState("all");
 
-  if (loading) return <p className="text-olive">Cargando productos...</p>;
-  if (error) return <p className="text-peach">Error: {error}</p>;
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        // Detecta automáticamente el backend (misma red)
+        const backendURL = `${window.location.origin.replace(
+          "5173",
+          "5000"
+        )}/api/products`;
+
+        const res = await axios.get(backendURL);
+const data = Array.isArray(res.data)
+  ? res.data
+  : res.data.products || res.data.items || [];
+setProducts(data);
+
+      } catch (error) {
+        console.error("Error al cargar productos:", error);
+      }
+    };
+    fetchProducts();
+  }, []);
+
+  const filteredProducts =
+    activeCategory === "all"
+      ? products
+      : products.filter(
+          (product) => product.category?.toLowerCase() === activeCategory
+        );
 
   return (
     <div className="space-y-6">
+      <h2 className="text-3xl font-bold text-olive">Productos</h2>
 
-      <h1 className="text-3xl font-bold text-olive">Productos</h1>
-
-      {/* GRID DE CARDS */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-
-        {products.map((item) => (
-          <div
-            key={item.id}
-            className="bg-offwhite border border-sage/30 shadow-soft rounded-2xl p-5 flex flex-col items-center text-center"
+      {/* Tabs de categorías */}
+      <div className="flex flex-wrap gap-3 border-b border-sage/30 pb-2">
+        {categories.map((cat) => (
+          <button
+            key={cat.id}
+            onClick={() => setActiveCategory(cat.id)}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+              activeCategory === cat.id
+                ? "bg-olive text-white shadow-md"
+                : "bg-cream border border-sage/40 hover:bg-sage/20 text-olive"
+            }`}
           >
-            {/* Si tu API trae URL de imagen, úsala; si no, mostramos un placeholder */}
+            {cat.name}
+          </button>
+        ))}
+      </div>
+
+      {/* Cards de productos */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredProducts.map((product) => (
+          <div
+            key={product.id}
+            className="bg-white shadow-sm rounded-2xl p-5 flex flex-col items-center text-center border border-sage/30 hover:shadow-md transition-all"
+          >
             <img
-              src={item.image || "https://cdn-icons-png.flaticon.com/512/590/590685.png"}
-              alt={item.name}
-              className="w-24 h-24 mb-4 object-contain"
+              src={product.image || "/images/default-food.jpg"}
+              alt={product.name}
+              className="w-24 h-24 object-cover mb-3 rounded-full border border-sage/20"
             />
+            <h3 className="font-semibold text-lg text-olive">
+              {product.name}
+            </h3>
+            <p className="text-moss font-bold">${product.price}</p>
+            <p className="text-sm text-gray-500">Stock: {product.stock}</p>
 
-            <h2 className="text-lg font-semibold text-olive">{item.name}</h2>
-
-            <p className="text-forest font-bold text-xl mb-1">${item.price}</p>
-
-            {/* Si tu API trae status/stock, úsalo; si no, mostramos "Disponible" */}
-            <p className="text-sm mb-4 text-moss">
-              Stock: {item.stock || "Disponible"}
-            </p>
-
-            <div className="flex gap-3">
-              <button className="px-3 py-1 rounded-lg border border-olive text-olive hover:bg-olive hover:text-offwhite transition">
+            <div className="flex gap-3 mt-4">
+              <button className="px-4 py-1 border border-sage/40 rounded-md text-sm hover:bg-sage/10">
                 Editar
               </button>
-
-              <button
-                className="px-3 py-1 rounded-lg border border-peach text-peach hover:bg-peach hover:text-offwhite transition"
-              >
+              <button className="px-4 py-1 border border-red-400 text-red-600 rounded-md text-sm hover:bg-red-50">
                 Eliminar
               </button>
             </div>
           </div>
         ))}
-
       </div>
     </div>
   );
 }
-

@@ -1,13 +1,17 @@
 import axios from "axios";
 import { store } from "../redux/store";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+// 🌐 Detecta automáticamente el backend (localhost o producción)
+const backendBaseURL =
+  import.meta.env.VITE_API_URL ||
+  window.location.origin.replace(/:\d+$/, ":5000");
 
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: `${backendBaseURL}/api`,
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true, // 🔒 para sesiones con cookies si se usan
 });
 
 // 🧠 Interceptor de request: agrega token al header si existe
@@ -41,6 +45,8 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+console.log("🌐 Backend detectado:", backendBaseURL);
 
 //
 // 🛍️ Servicios de productos
@@ -122,3 +128,4 @@ export const authService = {
 };
 
 export default api;
+
