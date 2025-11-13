@@ -42,7 +42,26 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#FAF4EC]">
+    <div className="relative min-h-screen flex items-center justify-center bg-[#FAF4EC]">
+      {/* 🔙 Botón para volver al sitio principal */}
+      <a
+        href="http://localhost:5173" // 👈 Cambiá este enlace si tu front usa otro puerto o dominio
+        className="absolute top-6 left-6 flex items-center gap-2 text-[#5c7d45] hover:text-[#4d6a3a] transition-all"
+      >
+        {/* Ícono de flecha */}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={2}
+          stroke="currentColor"
+          className="w-6 h-6"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+        <span className="font-medium">Volver al sitio</span>
+      </a>
+
       <form
         onSubmit={handleLogin}
         className="bg-white border border-[#d4a373]/40 rounded-xl p-10 shadow-md w-[350px] flex flex-col items-center gap-5"
@@ -55,11 +74,7 @@ export default function Login() {
               alt="Logo Tenedor"
               className="w-14 h-14"
             />
-            <img
-              src="/letras-logo.png"
-              alt="Logo Letras"
-              className="h-10"
-            />
+            <img src="/letras-logo.png" alt="Logo Letras" className="h-10" />
           </div>
         </div>
 

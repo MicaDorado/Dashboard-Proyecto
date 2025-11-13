@@ -2,26 +2,33 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 const ThemeContext = createContext();
 
-export const useTheme = () => useContext(ThemeContext);
-
 export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState("light"); // 'light' o 'dark'
+  const [theme, setTheme] = useState("light");
 
-  // Leer preferencia previa desde localStorage
+  // Cargar tema desde localStorage
   useEffect(() => {
-    const storedTheme = localStorage.getItem("theme");
-    if (storedTheme) setTheme(storedTheme);
+    const savedSettings = localStorage.getItem("dashboardSettings");
+    if (savedSettings) {
+      const { theme: savedTheme } = JSON.parse(savedSettings);
+      if (savedTheme) setTheme(savedTheme);
+    }
   }, []);
 
-  // Aplicar clase en el body para cambiar colores globales
+  // Aplicar clase dark/light globalmente
   useEffect(() => {
-    document.body.classList.remove("light", "dark");
-    document.body.classList.add(theme);
-    localStorage.setItem("theme", theme);
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
   }, [theme]);
 
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  // Guardar cambios en localStorage
+  const toggleTheme = (newTheme) => {
+    setTheme(newTheme);
+    const savedSettings = JSON.parse(localStorage.getItem("dashboardSettings")) || {};
+    savedSettings.theme = newTheme;
+    localStorage.setItem("dashboardSettings", JSON.stringify(savedSettings));
   };
 
   return (
@@ -30,3 +37,6 @@ export const ThemeProvider = ({ children }) => {
     </ThemeContext.Provider>
   );
 };
+
+// Hook para usar fácilmente en cualquier componente
+export const useTheme = () => useContext(ThemeContext);
