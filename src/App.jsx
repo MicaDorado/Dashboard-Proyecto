@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { ThemeProvider } from "./context/ThemeContext"; // 👈 Importar
+import { ThemeProvider } from "./context/ThemeContext";
 
 // 🧩 Páginas
 import Login from "./pages/Login/Login.jsx";
@@ -46,8 +46,11 @@ export default function App() {
     <ThemeProvider>
       <BrowserRouter>
         <Routes>
+          {/* 🔓 RUTAS PÚBLICAS */}
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
+          {/* 🔐 RUTAS PROTEGIDAS */}
           <Route
             path="/"
             element={
@@ -65,17 +68,6 @@ export default function App() {
               <ProtectedRoute>
                 <Layout>
                   <Products />
-                </Layout>
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/register"
-            element={
-              <ProtectedRoute>
-                <Layout>
-                  <Register />
                 </Layout>
               </ProtectedRoute>
             }
